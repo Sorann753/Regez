@@ -1,2 +1,4 @@
 /target
 edt.csv
+/Cargo.lock
+.vscode
