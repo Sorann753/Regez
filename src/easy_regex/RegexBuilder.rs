@@ -5,12 +5,12 @@ impl RegexBuilder{
     pub fn new(args: Box<[RegexToken]>) -> Regex {
         if args.len() == 0 {
             Regex {
-                pattern: Vec::new(),
+                pattern: Box::new([RegexToken::None]),
             }
         }
         else{
             Regex {
-                pattern: args.into_vec(),
+                pattern: args,
             }
         }
     }

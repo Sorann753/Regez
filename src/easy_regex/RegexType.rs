@@ -1,11 +1,48 @@
+/**
+ * @brief File defining the enum types and their implementations
+ * @author Sorann753
+ * @date 2023
+ */
+
 use std::ops::Deref;
+
+pub trait negate{
+    fn negate(&self) -> Self;
+}
 
 #[derive(Clone)]
 pub enum RepeatType{
     AtLeast(usize),
     AtMost(usize),
-    Exactly(usize),
     Between(usize, usize),
+    Exactly(usize),
+    AnyNumberExcept(usize),
+    Either(Box<RepeatType>, Box<RepeatType>), //TODO : find another way to negate the Between without having to add this
+}
+impl negate for RepeatType{
+    fn negate(&self) -> Self {
+        match self {
+            RepeatType::AtLeast(n) => RepeatType::AtMost(*n - 1),
+            RepeatType::AtMost(n) => RepeatType::AtLeast(*n + 1),
+            RepeatType::Exactly(n) => RepeatType::AnyNumberExcept(*n),
+            RepeatType::AnyNumberExcept(n) => RepeatType::Exactly(*n),
+            RepeatType::Between(min, max) if min == &(0 as usize) => {
+                RepeatType::AtMost(*max).negate()
+            },
+            RepeatType::Between(min, max) => {
+                RepeatType::Either(
+                    Box::new(RepeatType::AtMost(*min - 1)),
+                    Box::new(RepeatType::AtLeast(*max + 1))
+                )
+            },
+            RepeatType::Either(a, b) => match (a, b){ //TODO : if we keep this, use this match to make special case optimizations
+                _ => RepeatType::Either(
+                    Box::new(a.negate()),
+                    Box::new(b.negate())
+                ),
+            }
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -47,6 +84,7 @@ impl RegexToken{
                 RepeatType::AtLeast(n) => format!("{}{{{},}}", token.to_string(), n),
                 RepeatType::AtMost(n) => format!("{}{{0,{}}}", token.to_string(), n),
                 RepeatType::Exactly(n) => format!("{}{{{}}}", token.to_string(), n),
+                RepeatType::AnyNumberExcept(n) => format!("{}{{{}}}", token.to_string(), n),
                 RepeatType::Between(min, max) => format!("{}{{{},{}}}", token.to_string(), min, max),
             }
 
@@ -55,8 +93,14 @@ impl RegexToken{
             RegexToken::Not(_) => todo!("TODO : need to fix the logic")
         }
     }
-
-    pub fn negate(&self) -> RegexToken {
+}
+impl Default for RegexToken{
+    fn default() -> Self {
+        RegexToken::None
+    }
+}
+impl negate for RegexToken{
+    fn negate(&self) -> RegexToken {
         match self { //TODO verifier que tout marche bien
             RegexToken::None => RegexToken::Any,
             RegexToken::Any => RegexToken::None,
@@ -72,27 +116,21 @@ impl RegexToken{
             RegexToken::AnyLetter => RegexToken::Not(Box::new(RegexToken::AnyLetter)),
             RegexToken::UpperLetter => RegexToken::Not(Box::new(RegexToken::UpperLetter)),
             RegexToken::LowerLetter => RegexToken::Not(Box::new(RegexToken::LowerLetter)),
-            RegexToken::Repeat(repeat, token) => match repeat {
-                RepeatType::AtLeast(n) => RegexToken::Not(Box::new(RegexToken::Repeat(RepeatType::AtLeast(*n), token.clone()))),
-                RepeatType::AtMost(n) => RegexToken::Not(Box::new(RegexToken::Repeat(RepeatType::AtMost(*n), token.clone()))),
-                RepeatType::Exactly(n) => RegexToken::Not(Box::new(RegexToken::Repeat(RepeatType::Exactly(*n), token.clone()))),
-                RepeatType::Between(min, max) => RegexToken::Not(Box::new(RegexToken::Repeat(RepeatType::Between(*min, *max), token.clone()))),
-            },
-            RegexToken::Not(t) => t.deref().clone(),
+            RegexToken::Repeat(repeat, token) => RegexToken::Repeat(repeat.negate(), token.clone()),
+            RegexToken::Not(t) => *t.clone(),
         }
-    }
-}
-impl Default for RegexToken{
-    fn default() -> Self {
-        RegexToken::None
     }
 }
 
 pub struct Regex {
-    pub pattern: Vec<RegexToken>,
+    pub pattern: Box<[RegexToken]>,
 }
 impl Regex{
     pub fn to_string(&self) -> String {
-        self.pattern.iter().map(|t| t.to_string()).collect::<Vec<String>>().join("")
+        self.pattern
+            .iter()
+            .map(|t| t.to_string())
+            .collect::<Box<[String]>>()
+            .join("")
     }
 }
