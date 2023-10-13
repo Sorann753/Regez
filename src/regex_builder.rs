@@ -1,4 +1,5 @@
-use crate::easy_regex::RegexType::*;
+use crate::regex_type::*;
+use crate::regex::*;
 
 pub struct RegexBuilder;
 impl RegexBuilder{
@@ -39,7 +40,7 @@ impl RegexBuilder{
         return RegexToken::AnyNumber(Box::new(token));
     }
 
-    pub fn at_least(n: usize, token: RegexToken) -> RegexToken {
+    pub fn at_least(n: i32, token: RegexToken) -> RegexToken {
         if n == 1 {
             return RegexToken::OneOrMore(Box::new(token));
         }
@@ -48,15 +49,16 @@ impl RegexBuilder{
         }
     }
 
-    pub fn at_most(n: usize, token: RegexToken) -> RegexToken {
+    pub fn at_most(n: i32, token: RegexToken) -> RegexToken {
         return RegexToken::Repeat(RepeatType::AtMost(n), Box::new(token));
     }
 
-    pub fn repeat(n: usize, token: RegexToken) -> RegexToken {
+    pub fn repeat(n: i32, token: RegexToken) -> RegexToken {
+        if n == 0 { return RegexToken::None; }
         return RegexToken::Repeat(RepeatType::Exactly(n), Box::new(token));
     }
 
-    pub fn repeat_range(min: usize, max: usize, token: RegexToken) -> RegexToken {
+    pub fn repeat_range(min: i32, max: i32, token: RegexToken) -> RegexToken {
         return RegexToken::Repeat(RepeatType::Between(min, max), Box::new(token));
     }
 
@@ -90,5 +92,9 @@ impl RegexBuilder{
 
     pub fn anything_except(a: RegexToken) -> RegexToken {
         return a.negate();
+    }
+
+    pub fn not(a: RegexToken) -> RegexToken {
+        return RegexToken::Not(Box::new(a));
     }
 }

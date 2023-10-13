@@ -4,18 +4,16 @@
  * @date 2023
  */
 
-#[macro_use]
-mod easy_regex;
-use crate::easy_regex::RegexType::*;
+use regez::{MakeRegex, RegexGroup, regex::*};
 
 fn main() {
-    let is_valid_order : Regex = RegexBuilder!(
+    let is_valid_order : Regex = MakeRegex!(
         RegexBuilder::start_of_string(),
         RegexBuilder::at_least(5, RegexBuilder::number()),
         RegexGroup!(
             RegexBuilder::either(
                 RegexGroup!(
-                    RegexBuilder::at_least(1, RegexToken::Character('-')),
+                    RegexBuilder::at_least(1, RegexBuilder::character('-')),
                     RegexBuilder::any_number(RegexBuilder::letter()),
                     RegexBuilder::at_least(1, RegexBuilder::number()),
                     RegexBuilder::end_of_string()
@@ -25,7 +23,7 @@ fn main() {
         )
     );
 
-    let is_valid_location = RegexBuilder!(
+    let is_valid_location = MakeRegex!(
         RegexBuilder::start_of_string(),
         RegexBuilder::at_least(1, RegexBuilder::letter()),
         RegexBuilder::character('-'),
@@ -37,12 +35,12 @@ fn main() {
         RegexBuilder::end_of_string()
     );
 
-    let is_valid_order2 : Regex = RegexBuilder!(
+    let is_valid_order2 : Regex = MakeRegex!(
         RegexBuilder::start_of_string(),
         RegexBuilder::at_least(5, RegexBuilder::number()),
         RegexBuilder::either(
             RegexGroup!(
-                RegexBuilder::at_least(1, RegexToken::Character('-')),
+                RegexBuilder::at_least(1, RegexBuilder::character('-')),
                 RegexBuilder::optional(
                     RegexBuilder::at_least(1, RegexBuilder::letter())
                 ),
@@ -53,7 +51,7 @@ fn main() {
         )
     );
     
-    let is_valid_location2 = RegexBuilder!(
+    let is_valid_location2 = MakeRegex!(
         RegexBuilder::start_of_string(),
         RegexBuilder::upper_letter(),
         RegexBuilder::any_number(RegexBuilder::either(
