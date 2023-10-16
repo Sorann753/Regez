@@ -6,7 +6,7 @@
 
 use std::ops::Deref;
 
-pub trait Negate{
+pub(crate) trait Negate{
     fn negate(&self) -> Self;
 }
 
@@ -103,12 +103,6 @@ impl RegexToken{
             RegexToken::Group(ts) => format!("({})", ts.iter().map(|t| t.to_string()).collect::<Vec<String>>().join("")),
             RegexToken::Either(a, b) => format!("({}|{})", a.to_string(), b.to_string()),
             RegexToken::Not(t) => t.negate().to_string(),
-        }
-    }
-
-    fn optimize(&mut self){
-        match self{ //TODO : place special case optimizations here
-            _ => (),
         }
     }
 

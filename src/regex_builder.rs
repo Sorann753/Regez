@@ -12,7 +12,7 @@ impl RegexBuilder{
         else{
             Regez {
                 pattern: args,
-            }
+            }.optimize()
         }
     }
 
@@ -94,7 +94,8 @@ impl RegexBuilder{
         return a.negate();
     }
 
+    // alias for anything_except
     pub fn not(a: RegexToken) -> RegexToken {
-        return RegexToken::Not(Box::new(a));
+        return a.negate();
     }
 }

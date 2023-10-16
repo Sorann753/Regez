@@ -21,6 +21,15 @@ fn basic_negate(){
         RegexBuilder::end_of_string()
     );
 
+    let rgx3 = MakeRegex!(
+        RegexBuilder::start_of_string(),
+        RegexBuilder::anything_except(RegexGroup!(
+            RegexBuilder::at_least(1, RegexBuilder::number()),
+            RegexBuilder::at_least(2, RegexBuilder::letter())
+        )),
+        RegexBuilder::end_of_string()
+    );
+
     let positive_rgx = MakeRegex!(
         RegexBuilder::start_of_string(),
         RegexBuilder::at_least(1, RegexBuilder::number()),
@@ -29,6 +38,7 @@ fn basic_negate(){
     );
 
     assert_eq!(rgx.to_string(), rgx2.to_string());
+    assert_eq!(rgx2.to_string(), rgx3.to_string());
     assert_eq!(rgx.to_string(), r"^\D[a-zA-Z]?$");
     
     let negative = Regex::new(&rgx.to_string()).unwrap();
