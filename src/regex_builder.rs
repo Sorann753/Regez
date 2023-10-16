@@ -3,14 +3,14 @@ use crate::regex::*;
 
 pub struct RegexBuilder;
 impl RegexBuilder{
-    pub fn new(args: Box<[RegexToken]>) -> Regex {
+    pub fn new(args: Box<[RegexToken]>) -> Regez {
         if args.len() == 0 {
-            Regex {
+            Regez {
                 pattern: Box::new([RegexToken::None]),
             }
         }
         else{
-            Regex {
+            Regez {
                 pattern: args,
             }
         }
@@ -53,7 +53,7 @@ impl RegexBuilder{
         return RegexToken::Repeat(RepeatType::AtMost(n), Box::new(token));
     }
 
-    pub fn repeat(n: i32, token: RegexToken) -> RegexToken {
+    pub fn repeat_exactly(n: i32, token: RegexToken) -> RegexToken {
         if n == 0 { return RegexToken::None; }
         return RegexToken::Repeat(RepeatType::Exactly(n), Box::new(token));
     }

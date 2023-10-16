@@ -7,7 +7,7 @@
 use regez::{MakeRegex, RegexGroup, regex::*};
 
 fn main() {
-    let is_valid_order : Regex = MakeRegex!(
+    let is_valid_order : Regez = MakeRegex!(
         RegexBuilder::start_of_string(),
         RegexBuilder::at_least(5, RegexBuilder::number()),
         RegexGroup!(
@@ -28,14 +28,14 @@ fn main() {
         RegexBuilder::at_least(1, RegexBuilder::letter()),
         RegexBuilder::character('-'),
         RegexBuilder::number(),
-        RegexBuilder::repeat(2, RegexGroup!(
+        RegexBuilder::repeat_exactly(2, RegexGroup!(
             RegexBuilder::character('-'),
-            RegexBuilder::repeat(2, RegexBuilder::number())
+            RegexBuilder::repeat_exactly(2, RegexBuilder::number())
         )),
         RegexBuilder::end_of_string()
     );
 
-    let is_valid_order2 : Regex = MakeRegex!(
+    let is_valid_order2 : Regez = MakeRegex!(
         RegexBuilder::start_of_string(),
         RegexBuilder::at_least(5, RegexBuilder::number()),
         RegexBuilder::either(
@@ -62,9 +62,9 @@ fn main() {
         RegexBuilder::character('-'),
         RegexBuilder::number(),
         RegexBuilder::anything_except(RegexBuilder::number()),
-        RegexBuilder::repeat(2, RegexGroup!(
+        RegexBuilder::repeat_exactly(2, RegexGroup!(
             RegexBuilder::character('-'),
-            RegexBuilder::repeat(2, RegexBuilder::number())
+            RegexBuilder::repeat_exactly(2, RegexBuilder::number())
         )),
         RegexBuilder::end_of_string()
     );

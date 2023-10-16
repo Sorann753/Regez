@@ -106,8 +106,14 @@ impl RegexToken{
         }
     }
 
+    fn optimize(&mut self){
+        match self{ //TODO : place special case optimizations here
+            _ => (),
+        }
+    }
+
     fn negate_group(ts : &Box<[RegexToken]>) -> RegexToken {
-        match ts { // place special case optimizations here
+        match ts { // TODO : place special case optimizations here
             _ => RegexToken::Group(ts.iter().map(|t| t.negate()).collect::<Box<[RegexToken]>>()),
         }
     }
@@ -127,18 +133,18 @@ impl Default for RegexToken{
 impl Negate for RegexToken{
     fn negate(&self) -> RegexToken {
         match self {
-            RegexToken::None => RegexToken::Any,
+            RegexToken::None => RegexToken::None, //doesn't get negated
             RegexToken::Any => RegexToken::None,
             RegexToken::Character(_) => todo!("all char but one"),
-            RegexToken::AnyNumber(_) => RegexToken::None,
+            RegexToken::AnyNumber(_) => todo!("find a way to negate AnyNumber"),
             RegexToken::OneOrMore(t) => RegexToken::Repeat(RepeatType::Exactly(0), t.clone()),
             RegexToken::Optional(t) => t.deref().clone(),
             RegexToken::Group(ts) => RegexToken::negate_group(ts),
             RegexToken::Either(_, _) => todo!("find a way to negate either"),
             RegexToken::Number => RegexToken::NotANumber,
             RegexToken::NotANumber => RegexToken::Number,
-            RegexToken::Beginning => RegexToken::End,
-            RegexToken::End => RegexToken::Beginning,
+            RegexToken::Beginning => RegexToken::Beginning, //doesn't get negated
+            RegexToken::End => RegexToken::End, //doesn't get negated
             RegexToken::AnyLetter => RegexToken::NotALetter,
             RegexToken::NotALetter => RegexToken::AnyLetter,
             RegexToken::UpperLetter => todo!("find a way to negate UpperLetter"),
