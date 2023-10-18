@@ -1,5 +1,6 @@
 use regez::{MakeRegex, RegexGroup};
 use regex::Regex;
+mod common;
 
 #[test]
 fn at_least_1_number() {
@@ -41,7 +42,5 @@ fn either_test(){
     let text2 = "547abX";
     let text3 = "WWWlmao";
 
-    assert_eq!(from_regez.is_match(text1), from_string.is_match(text1));
-    assert_eq!(from_regez.is_match(text2), from_string.is_match(text2));
-    assert_eq!(from_regez.is_match(text3), from_string.is_match(text3));
+    common::assert_eq_on_texts(from_regez, from_string, Box::new([text1, text2, text3]));
 }

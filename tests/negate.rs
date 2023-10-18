@@ -1,5 +1,6 @@
 use regez::{MakeRegex, RegexGroup};
 use regex::Regex;
+mod common;
 
 #[test]
 fn basic_negate(){
@@ -37,12 +38,18 @@ fn basic_negate(){
         RegexBuilder::end_of_string()
     );
 
-    assert_eq!(rgx.to_string(), rgx2.to_string());
-    assert_eq!(rgx2.to_string(), rgx3.to_string());
-    assert_eq!(rgx.to_string(), r"^\D[a-zA-Z]?$");
+    common::assert_all_eq(&[
+        rgx.to_string(),
+        rgx2.to_string(),
+        rgx3.to_string(),
+        r"^\D[a-zA-Z]?$".to_string()
+    ]);
     
     let negative = Regex::new(&rgx.to_string()).unwrap();
     let positive = Regex::new(&positive_rgx.to_string()).unwrap();
     let text = "6aB";
-    assert_ne!(positive.is_match(text), negative.is_match(text));
+    let text2 = "3X";
+    let text3 = "lorem";
+
+    common::assert_ne_on_texts(negative, positive, Box::new([text, text2, text3]));
 }

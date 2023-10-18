@@ -1,4 +1,5 @@
 use regez::{MakeRegex, RegexGroup};
+mod common;
 
 #[test]
 fn either_common_token(){
@@ -31,6 +32,9 @@ fn either_common_token(){
         RegexBuilder::end_of_string()
     );
 
-    assert_eq!(rgx.to_string(), rgx_optimal.to_string());
-    assert_eq!(rgx.to_string(), r"^\d{5,}(-+[a-zA-Z]*\d+)?$");
+    common::assert_all_eq(&[
+        rgx.to_string(),
+        rgx_optimal.to_string(),
+        r"^\d{5,}(-+[a-zA-Z]*\d+)?$".to_string()
+    ]);
 }
