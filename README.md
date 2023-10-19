@@ -1,7 +1,7 @@
 # Regez
 
 ## Regex made easy
-This is a tool to create regex using english like syntax. the name is pronounced as a combination of reg as in "regex" and ez as in "gg ez noobs"
+This is a tool to create regex using english like syntax. the name is pronounced as a combination of reg as in "regex" and ez as in "gg ez"
 For now **this project is nowhere near production ready** but if the idea inspire you, feel free to use my code as it is licensed under the MIT license
 
 ## Features
