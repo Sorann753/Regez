@@ -48,7 +48,7 @@ checksum = "56d84fdd47036b038fc80dd333d10b6aab10d5d31f4a366e20014def75328d33"
 
 [[package]]
 name = "regez"
-version = "0.1.0"
+version = "0.1.0-dev"
 dependencies = [
  "regex",
 ]

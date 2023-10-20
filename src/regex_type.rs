@@ -76,8 +76,8 @@ pub enum RegexToken{
 impl RegexToken{
     pub fn to_string(&self) -> String {
         match self {
-            RegexToken::None => String::from(""),
-            RegexToken::Any => String::from("[^]"),
+            RegexToken::None => String::from("[]"),
+            RegexToken::Any => String::from("."),
             RegexToken::Beginning => String::from("^"),
             RegexToken::End => String::from("$"),
             RegexToken::Number => String::from(r"\d"),
@@ -97,11 +97,11 @@ impl RegexToken{
                 RepeatType::Exactly(n) => format!("{}{{{}}}", token.to_string(), n),
                 RepeatType::AnyNumberExcept(n) => format!("{}{{{}}}", token.to_string(), n),
                 RepeatType::Between(min, max) => format!("{}{{{},{}}}", token.to_string(), min, max),
-                RepeatType::Either(a, b) => format!("({}|{})", RegexToken::Repeat(a.deref().clone(), token.clone()).to_string(), RegexToken::Repeat(b.deref().clone(), token.clone()).to_string()),
+                RepeatType::Either(a, b) => format!("{}|{}", RegexToken::Repeat(a.deref().clone(), token.clone()).to_string(), RegexToken::Repeat(b.deref().clone(), token.clone()).to_string()),
             }
 
             RegexToken::Group(ts) => format!("({})", ts.iter().map(|t| t.to_string()).collect::<Vec<String>>().join("")),
-            RegexToken::Either(a, b) => format!("({}|{})", a.to_string(), b.to_string()),
+            RegexToken::Either(a, b) => format!("{}|{}", a.to_string(), b.to_string()),
             RegexToken::Not(t) => t.negate().to_string(),
         }
     }
@@ -130,7 +130,7 @@ impl Negate for RegexToken{
             RegexToken::None => RegexToken::None, //doesn't get negated
             RegexToken::Any => RegexToken::None,
             RegexToken::Character(_) => todo!("all char but one"),
-            RegexToken::AnyNumber(_) => todo!("find a way to negate AnyNumber"),
+            RegexToken::AnyNumber(t) => RegexToken::AnyNumber(Box::new(t.negate())),
             RegexToken::OneOrMore(t) => RegexToken::Repeat(RepeatType::Exactly(0), t.clone()),
             RegexToken::Optional(t) => t.deref().clone(),
             RegexToken::Group(ts) => RegexToken::negate_group(ts),

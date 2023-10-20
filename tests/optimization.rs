@@ -33,8 +33,8 @@ fn either_common_token(){
     );
 
     common::assert_all_eq(&[
-        rgx.to_string(),
-        rgx_optimal.to_string(),
-        r"^\d{5,}(-+[a-zA-Z]*\d+)?$".to_string()
+        &rgx.to_string(),
+        &rgx_optimal.to_string(),
+        &r"^\d{5,}(-+[a-zA-Z]*\d+)?$".to_string()
     ]);
 }

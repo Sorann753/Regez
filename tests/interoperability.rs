@@ -34,7 +34,7 @@ fn either_test(){
         )
     );
 
-    assert_eq!(rgx.to_string(), r"(\d+[a-zA-Z]{2}X)|(WWW.*)");
+    assert_eq!(rgx.to_string(), r"(\d+[a-zA-Z]{2,}X)|(W{3}.*)");
 
     let from_regez = Regex::new(&rgx.to_string()).unwrap();
     let from_string = Regex::new(&rgx.to_string()).unwrap();
@@ -42,5 +42,5 @@ fn either_test(){
     let text2 = "547abX";
     let text3 = "WWWlmao";
 
-    common::assert_eq_on_texts(from_regez, from_string, Box::new([text1, text2, text3]));
+    common::assert_eq_on_texts(from_regez, from_string, &[text1, text2, text3]);
 }
